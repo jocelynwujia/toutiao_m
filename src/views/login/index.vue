@@ -98,6 +98,7 @@
                 const { data } = await login(user)
                 this.$store.commit('setUser',data.data)
                 this.$toast.success('登录成功')
+                this.$router.push('/my')
                 
             }catch(err){
                 // console.log(err);
