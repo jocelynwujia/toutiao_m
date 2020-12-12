@@ -1,7 +1,9 @@
 <template>
     <div class="login-container">
         <!-- 导航栏 -->
-        <van-nav-bar class="page-nav-bar" title="登录" />
+        <van-nav-bar class="page-nav-bar" title="登录">
+            <van-icon slot="left" name="cross" @click="$router.back()"/>
+        </van-nav-bar>
         <!--登录表单 -->
         <van-form @submit="onSubmit" ref="loginForm">
         <van-field
@@ -27,8 +29,8 @@
         <!-- 尾部插槽 第二种写法 -->
          <template #button>
              <!-- 倒计时 -->
-             <van-count-down :time="1000 * 10" format="请ss秒后重新获取" @finish = "isCountDownShow = false" v-if="isCountDownShow"/>
-            <van-button size="small" round type="default" native-type="button" class="send-sms-btn" @click ="onSendSms" v-else>发送验证码</van-button>
+             <van-count-down v-if="isCountDownShow" :time="1000 * 60" format="请ss秒后重新获取" @finish = "isCountDownShow = false" />
+            <van-button v-else size="small" round type="default" native-type="button" class="send-sms-btn" @click ="onSendSms">发送验证码</van-button>
         </template>
         </van-field>
         <div class="login-btn-wrap">
@@ -41,7 +43,7 @@
 </template>
 <script>
     // 导入login的请求方式
-    import {login} from '@/api/user.js'
+    import { login,sendSms } from '@/api/user.js'
     export default {
         name: 'LoginIndex',
         data () {
@@ -93,8 +95,10 @@
 
             // 3.提交表单数据，请求登录
             try {
-                const res = await login(user)
+                const { data } = await login(user)
+                this.$store.commit('setUser',data.data)
                 this.$toast.success('登录成功')
+                
             }catch(err){
                 // console.log(err);
                 if(err.response.status === 400){
@@ -118,6 +122,19 @@
                 // 2.验证通过，倒计时开启
                 this.isCountDownShow = true
                 // 3.请求发送验证码
+                try {
+                    await sendSms(this.user.mobile)
+                    console.log('发送成功')
+                } catch(err){
+                    // // 先关闭倒计时
+                    this.isCountDownShow = false
+                    console.log(err)
+                    if(err.response.status === 429){
+                        this.$toast('发送次数太频率，请稍后再试')
+                    } else {
+                        this.$toast('验证码发送失败！')
+                    }
+                }
                 
             }
     }

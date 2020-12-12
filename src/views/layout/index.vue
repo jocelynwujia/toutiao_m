@@ -1,0 +1,50 @@
+<template>
+  <div class="layout-container">
+    
+    <!-- 子路由出口 -->
+    <router-view />
+    <!-- tabBar导航 -->
+    <!-- route是开启路由模式 -->
+    <van-tabbar class = "layout-tabbar" route>
+      <van-tabbar-item to="/home">
+        <i slot="icon" class="iconfont toutiao_shouye"></i>
+        <span>首页</span>  
+      </van-tabbar-item>
+       <van-tabbar-item to="/video">
+        <i slot="icon" class="iconfont toutiao_shipin"></i>
+        <span>视频</span>  
+      </van-tabbar-item> 
+      <van-tabbar-item to="/qa">
+        <i slot="icon" class="iconfont toutiao_wenda"></i>
+        <span>问答</span>  
+      </van-tabbar-item> 
+      <van-tabbar-item to="/my">
+        <i slot="icon" class="iconfont toutiao_wode"></i>
+        <span>我的</span>  
+      </van-tabbar-item>
+    </van-tabbar>
+  </div>
+</template>
+
+<script>
+export default {
+  name:'layoutIndex',
+  data(){
+    return{}
+  },
+  methods:{}
+}
+</script>
+
+<style lang="less" scoped>
+  .layout-container{
+    .layout-tabbar{
+      i.iconfont{
+        font-size: 40px;
+      }
+      span.text {
+      font-size: 20px;
+    }
+    }
+  }
+</style>
