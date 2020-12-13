@@ -23,15 +23,15 @@
         </div>
         <div class="data-item">
           <span class="count">10</span>
-          <span class="text">头条</span>
+          <span class="text">关注</span>
         </div>
         <div class="data-item">
           <span class="count">10</span>
-          <span class="text">头条</span>
+          <span class="text">粉丝</span>
         </div>
         <div class="data-item">
           <span class="count">10</span>
-          <span class="text">头条</span>
+          <span class="text">获赞</span>
         </div>
       </div>
     </div>
@@ -59,7 +59,7 @@
     <!-- Cell 单元格 -->
     <van-cell title="消息通知" is-link />
     <van-cell class="mb-9" title="小智同学" is-link />
-    <van-cell v-if="user" class="logout-cell" clickable title="退出登录" />
+    <van-cell v-if="user" class="logout-cell" clickable title="退出登录" @click="onLogout"/>
   </div>
 </template>
   </div>
@@ -81,7 +81,28 @@ export default {
   watch: {},
   created () {},
   mounted () {},
-  methods: {}
+  methods: {
+    // 点击按钮，退出
+    onLogout(){
+      // 提示是否退出
+       this.$dialog.confirm({
+        title: '确认退出吗',
+      })
+        .then(() => {
+          // on confirm
+          // 确认退出：清除登录状态（容器中的user 和 本地存储中的user）
+           this.$store.commit('setUser',null)
+        })
+        .catch(() => {
+          // on cancel
+          // console.log('取消执行这里')
+        })
+      
+      // 在组件中需要使用this.$dialog来使用弹框组件
+     
+
+    }
+  }
 }
 </script>
 
