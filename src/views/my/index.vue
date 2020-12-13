@@ -8,9 +8,9 @@
             class="avatar"
             round
             fit="cover"
-            src="https://img.yzcdn.cn/vant/cat.jpeg"
+            :src="this.userInfo.photo"
           />
-          <span class="name">黑马头条号</span>
+          <span class="name">{{userInfo.name}}</span>
         </div>
         <div class="right">
           <van-button size="mini" round>编辑资料</van-button>
@@ -18,19 +18,19 @@
       </div>
       <div class="data-stats">
         <div class="data-item">
-          <span class="count">10</span>
+          <span class="count">{{this.userInfo.art_count}}</span>
           <span class="text">头条</span>
         </div>
         <div class="data-item">
-          <span class="count">10</span>
+          <span class="count">{{userInfo.follow_count}}</span>
           <span class="text">关注</span>
         </div>
         <div class="data-item">
-          <span class="count">10</span>
+          <span class="count">{{userInfo.fans_count}}</span>
           <span class="text">粉丝</span>
         </div>
         <div class="data-item">
-          <span class="count">10</span>
+          <span class="count">{{userInfo.like_count}}</span>
           <span class="text">获赞</span>
         </div>
       </div>
@@ -68,23 +68,33 @@
 
 <script>
 import { mapState } from 'vuex'
+import { getUserInfo } from '@/api/user'
 export default {
   name: 'MyPage',
   components: {},
   props: {},
   data () {
-    return {}
+    return {
+      userInfo:{} //用户信息
+    }
   },
   computed: {
     ...mapState(['user'])
   },
   watch: {},
-  created () {},
+  created () {
+    // 如果用户登录了，则获取用户的信息数据
+    //防止用户没有登录还要去调用接口
+    if(this.user) {
+      this.loadUserInfo()
+    }
+  },
   mounted () {},
   methods: {
     // 点击按钮，退出
     onLogout(){
       // 提示是否退出
+      // 在组件中需要使用this.$dialog来使用弹框组件
        this.$dialog.confirm({
         title: '确认退出吗',
       })
@@ -97,10 +107,18 @@ export default {
           // on cancel
           // console.log('取消执行这里')
         })
-      
-      // 在组件中需要使用this.$dialog来使用弹框组件
-     
-
+    },
+    // 获取用户自己的数据信息
+    async loadUserInfo(){
+      try{
+        const {data} = await getUserInfo()
+        // console.log(data)
+        this.userInfo = data.data
+        console.log(this.userInfo)
+      }catch(err){
+        this.$toast('获取数据失败，请稍后重试')
+        console.log(err)
+      }
     }
   }
 }
