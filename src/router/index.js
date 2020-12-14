@@ -9,7 +9,7 @@ const routes = [{
   name:'login',
   component: () => import('@/views/login')
 },{
-  path:'/',
+  path:'/home',
   // 如果父路由有默认子路由，name没有意义
   // name:'layout',
   component: () => import('@/views/layout'),
