@@ -1,5 +1,4 @@
 <template>
-
  <van-cell  class="article-item">
     <div slot="title" class="title van-multi-ellipsis--l2">{{article.title}}</div>
     <div slot="label">
@@ -28,7 +27,6 @@
     fit="cover"
     :src="article.cover.images[0]"
   />
-    <div ></div>
   </van-cell>
 </template>
 
@@ -43,7 +41,9 @@ export default {
     }
   },
   data(){
-    return{}
+    return{
+     
+    }
   }
 }
 </script>
