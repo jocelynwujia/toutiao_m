@@ -79,6 +79,7 @@ export default {
         position: fixed;
         top: 92px;
         left: 0;
+        right: 0;
         z-index: 1;
         height: 82px;
       }

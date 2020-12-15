@@ -11,6 +11,9 @@ import './styles/index.less'
 // 导入动态设置 REM 基准值，html 标签 `font-size` 的变化
 import 'amfe-flexible' 
 
+// 加载dayjs初始化配置
+import './utils/dayjs'
+
 Vue.config.productionTip = false
 
 // 注册使用vant组件库
