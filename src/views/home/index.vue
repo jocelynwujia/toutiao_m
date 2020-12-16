@@ -29,7 +29,10 @@
     closeable
     close-icon-position="top-left"
     >
-     <channel-edit></channel-edit>
+     <channel-edit 
+     :myChannels="channels"
+     :active="active"
+     ></channel-edit>
     </van-popup>
     <!-- /频道编辑弹出层 -->
   </div>
@@ -48,7 +51,7 @@ export default {
   props: {},
   data () {
     return {
-      active:0,
+      active:0,//频道高亮
       // 用户频道数据
       channels:[],
        isChannelEditShow:false //控制频道编辑弹出层的显示与隐藏
