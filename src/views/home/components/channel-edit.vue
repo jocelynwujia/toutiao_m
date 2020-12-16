@@ -8,7 +8,8 @@
         type="danger"
         plain
         class="edit-btn"
-      >编辑</van-button>
+        @click="isEdit = !isEdit"
+      >{{isEdit ? '完成':'编辑'}}</van-button>
     </van-cell>
     <!-- 宫格 -->
     <van-grid class="my-grid" :gutter="10">
@@ -17,7 +18,15 @@
         icon="clear"
         v-for="(channel,index) in myChannels"
         :key="index"
+        @click="onMyChannelClick(channel,index)"
       >
+      <!-- 关闭图标 -->
+      <van-icon 
+      v-show="isEdit && !fixChannels.includes(channel.id)"
+      slot="icon" 
+      name="clear"
+      >
+      </van-icon>
       <!-- v-bind:clas语法：一个对象，对象中的key表示要作用的CSS类名，对象中的value要计算出布尔值 -->
         <span 
         slot="text" 
@@ -35,6 +44,7 @@
         v-for="(channel,index) in recommandChannels"
         :key="index"
         :text="channel.name"
+        @click="onAddChannel(channel)"
       />
     </van-grid>
   </div>
@@ -56,7 +66,10 @@ export default {
   },
   data(){
     return{
-      allChannels:[] //所有频道列表
+      allChannels:[], //所有频道列表
+      isEdit:false, //控制编辑图标的显示状态
+      //固定频道不允许删除
+      fixChannels:[0]
     }
   },
   created(){
@@ -92,6 +105,7 @@ export default {
     // }
   },
   methods:{
+    // 获取频道列表数据
    async loadAllChannels(){
      try{
        const {data} = await getAllChannels()
@@ -100,6 +114,32 @@ export default {
      }catch(err){
        this.$toast('数据获取失败')
      }
+    },
+    // 添加频道
+    onAddChannel(channel){
+      this.myChannels.push(channel)
+    },
+    // 删除频道
+    onMyChannelClick(channel,index){
+      // console.log(channel,index)    
+      if(this.isEdit){
+        // 如果在编辑状态下，删除频道
+        // 固定频道不允许删除
+        if(this.fixChannels.includes(channel.id)){
+          return
+        }
+        // splice 参数1：要删除项的索引，参数2：删几项，如果不指定，则从参数1开始，一直删到最后
+        this.myChannels.splice(index,1)
+        // 如果删除的频道是激活项之前的频道，则更新激活项
+        if(index <= this.active) {
+          // 编辑弹出层不关闭
+          this.$emit('update-active',this.active - 1,true)
+        }
+      }else{
+         // 如果在完成状态下，则切换频道,编辑弹出层关闭
+        this.$emit('update-active',index,false)
+      }
+     
     }
   }
 }
@@ -132,6 +172,9 @@ export default {
         }
         .active{
           color: red;
+        }
+        .van-grid-item__icon-wrapper{
+          position: unset;
         }
       }
     }

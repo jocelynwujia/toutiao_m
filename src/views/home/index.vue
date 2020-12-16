@@ -2,15 +2,30 @@
   <div class="home-container">
     <!-- 导航栏 -->
     <van-nav-bar class="page-nav-bar" fixed>
-      <van-button slot="title" size="small" type="info" round icon="search" class="search-btn">搜索</van-button>
+      <van-button 
+      slot="title" 
+      size="small" 
+      type="info" 
+      round icon="search" 
+      class="search-btn"
+      >搜索</van-button>
     </van-nav-bar>      
 
     <!-- 频道列表    -->
     <!-- v-model 绑定当前激活标签对应的索引号 -->
     <!-- 通过 animated 属性可以开启切换标签内容时的转场动画 -->
     <!-- 通过 swipeable 属性可以开启滑动切换标签页。 -->
-    <van-tabs class="channel-tabs" v-model="active" animated swipeable>
-      <van-tab :title="channel.name" v-for="channel in channels" :key = "channel.id">
+    <van-tabs 
+    class="channel-tabs" 
+    v-model="active" 
+    animated 
+    swipeable
+    >
+      <van-tab 
+      :title="channel.name" 
+      v-for="channel in channels" 
+      :key = "channel.id"
+      >
         <!-- 文章列表 -->
         <article-list :channel="channel"/>
           <!-- 文章列表 -->
@@ -32,6 +47,7 @@
      <channel-edit 
      :myChannels="channels"
      :active="active"
+     @update-active = "onUpdateActive"
      ></channel-edit>
     </van-popup>
     <!-- /频道编辑弹出层 -->
@@ -54,7 +70,7 @@ export default {
       active:0,//频道高亮
       // 用户频道数据
       channels:[],
-       isChannelEditShow:false //控制频道编辑弹出层的显示与隐藏
+      isChannelEditShow:false //控制频道编辑弹出层的显示与隐藏
     }
   },
   computed: {},
@@ -64,6 +80,7 @@ export default {
   },
   mounted () {},
   methods: {
+    // 获取用户频道列表
     async loadChannels(){
       try{
           const {data} = await getUserChannels()
@@ -71,8 +88,17 @@ export default {
           this.channels = data.data.channels
           // console.log(this.channels)
       }catch(err){
-        console.log('获取用户频道列表失败')
+        this.$toast('获取用户频道数据失败')
       }
+    },
+    // 修改active的值
+    onUpdateActive(index,isChannelEditShow=true){
+      // console.log(index)
+      // 更新激活的频道项
+      this.active = index
+      // 关闭弹出层
+      // this.isChannelEditShow = false
+      this.isChannelEditShow = isChannelEditShow
     }
   }
 }
