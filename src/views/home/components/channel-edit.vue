@@ -51,7 +51,9 @@
 </template>
 
 <script>
-import { getAllChannels }  from '@/api/channel'
+import { getAllChannels,addUserChannels,deleteUserChannel }  from '@/api/channel'
+import {mapState} from 'vuex'
+import { setItem } from '@/utils/storage'
 export default {
   name:'channelEdit',
   props:{
@@ -76,6 +78,7 @@ export default {
     this.loadAllChannels()
   },
   computed:{
+    ...mapState(['user']),
     // 方法二
     recommandChannels(){
       // filter遍历数组，找到符合条件的元素存到新数组
@@ -116,8 +119,28 @@ export default {
      }
     },
     // 添加频道
-    onAddChannel(channel){
+    async onAddChannel(channel){
       this.myChannels.push(channel)
+      // 数据持久化处理
+      if(this.user){        
+        // 1.如果客户为登录状态，则将数据请求到线上状态
+        try{
+            await addUserChannels({
+              id:channel.id,
+              seq:this.myChannels.length
+          })
+          this.$toast('添加成功')
+        }catch(err){
+          console.log(err)
+          this.$toast('保存失败')
+        }
+      }else{
+        // 2.如果客户未登录，则将数据存到本地存储
+       setItem('TOUTIAO_CHANNELS',this.myChannels)
+      }
+      
+      
+      
     },
     // 删除频道
     onMyChannelClick(channel,index){
@@ -134,12 +157,30 @@ export default {
         if(index <= this.active) {
           // 编辑弹出层不关闭
           this.$emit('update-active',this.active - 1,true)
+
+          // 处理数据持久化
+          this.deleteChannel(channel)
         }
       }else{
          // 如果在完成状态下，则切换频道,编辑弹出层关闭
         this.$emit('update-active',index,false)
       }
      
+    },
+    // 处理删除频道 数据持久化处理
+    async deleteChannel(channel){
+      try {
+        if(this.user){
+        // 如果用户是登录状态,则请求接口，线上存储
+        await deleteUserChannel(channel.id)
+      }else{
+        // 用户未登录，则重新获取本地存储的数据
+        setItem('TOUTIAO_CHANNELS',this.myChannels)
+
+      }
+      }catch(err){
+        this.$toast('操作失败，请稍后重试',err)
+      }
     }
   }
 }
