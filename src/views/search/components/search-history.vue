@@ -1,0 +1,32 @@
+<template>
+  <div class="search-history">
+    <van-cell title="历史记录" value="内容">
+      <span>全部删除</span>
+      <span>完成</span>
+      <van-icon name="delete" />
+    </van-cell>
+    <van-cell title="hello">
+      <van-icon name="close" />
+    </van-cell>
+    <van-cell title="hello">
+      <van-icon name="close" />
+    </van-cell>
+    <van-cell title="hello">
+      <van-icon name="close" />
+    </van-cell>
+  </div>
+</template>
+
+<script>
+export default {
+  name:'searchHistory',
+  data(){
+    return {}
+  },
+  methods:{}
+}
+</script>
+
+<style lang="less" scoped>
+  
+</style>
