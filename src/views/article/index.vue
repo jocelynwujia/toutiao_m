@@ -106,7 +106,7 @@ export default {
   components: {},
   props: {
     articleId: {
-      type: [Number, String],
+      type: [Number, String,Object],
       required: true
     }
   },
@@ -115,9 +115,20 @@ export default {
   },
   computed: {},
   watch: {},
-  created () {},
+  created () {
+    this.loadArticle()
+  },
   mounted () {},
-  methods: {}
+  methods: {
+    async loadArticle(){
+      try{
+        const {data} = await getArticleById(this.articleId)
+        console.log(data)
+      }catch(err){
+        this.$toast('获取数据失败！')
+      }
+    }
+  }
 }
 </script>
 

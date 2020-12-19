@@ -72,7 +72,7 @@ export default {
         //   JSON.parse('djdjfd')
         // }
         const { results } = data.data
-        console.log(results)
+        // console.log(results)
       // 2.把请求结果数据放到list中 ,展开运算符是把results结果一个一个取出来
         this.list.push(...results)
       // 3.本次数据加载结束之后把加载状态设置为结束
