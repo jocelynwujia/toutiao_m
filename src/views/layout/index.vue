@@ -6,7 +6,7 @@
     <!-- tabBar导航 -->
     <!-- route是开启路由模式 -->
     <van-tabbar class = "layout-tabbar" route>
-      <van-tabbar-item to="/home">
+      <van-tabbar-item to="/">
         <i slot="icon" class="iconfont toutiao_shouye"></i>
         <span>首页</span>  
       </van-tabbar-item>
