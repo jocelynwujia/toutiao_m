@@ -15,15 +15,29 @@
     </form>
 
      <!-- 搜索结果 -->
-    <search-results v-if="isResultShow"/>
+    <search-results 
+    :searchHistories = "searchHistories"
+    v-if="isResultShow"
+    :searchText = "searchText"
+    
+    />
     <!-- /搜索结果 -->
 
      <!-- 联想建议 -->
-    <search-suggestion v-else-if="searchText"/>
+    <search-suggestion 
+      :searchText = "searchText"
+      v-else-if="searchText"
+      @search="onSearch"
+    />
     <!-- /联想建议 -->
 
     <!-- 搜索历史记录 -->
-    <search-history v-else/>
+    <search-history 
+      :searchHistories="searchHistories"
+      @clear-search-histories ="searchHistories = []"
+      @search="onSearch"
+      v-else
+    />
     <!-- /搜索历史记录 -->
 
    
@@ -34,6 +48,7 @@
 import searchHistory from './components/search-history'
 import searchSuggestion from './components/search-suggestion'
 import searchResults from './components/search-results'
+import {getItem,setItem} from '@/utils/storage'
 export default {
   name:'searchIndex',
   components:{
@@ -43,14 +58,38 @@ export default {
   },
   data(){
     return {
+      // 搜索框的内容
       searchText: '',
       // 控制搜索的展示结果
-      isResultShow:false
-    }
+      isResultShow:false,
+      // 搜索历史记录数据
+      searchHistories:getItem('TOUTIAO_SEARCH_HISTORIES') || []}
+  },
+  watch:{
+      searchHistories(value){
+        // console.log('haha')
+        setItem('TOUTIAO_SEARCHa_HISTORIES',value)
+      }
+      // 完整写法，可以配置更多自定义配置
+    // searchHistories:{
+    //   handler(){
+    //     console.log('haha')
+    //   }
+    // }
   },
   methods:{
     onSearch(val) {
-      console.log(val)
+      // console.log(val)
+      this.searchText = val
+      // 存储搜索历史记录
+      const index = this.searchHistories.indexOf(val)
+      if(index != -1){
+        // 先删除原纪录的值
+        this.searchHistories.splice(index,1)
+      }
+      // 再将新搜索添加到历史记录最前面
+      this.searchHistories.unshift(val)
+      // 渲染搜索结果
       this.isResultShow = true
     },
     onCancel() {
