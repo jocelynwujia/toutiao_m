@@ -35,19 +35,45 @@
           />
           <div slot="title" class="user-name">{{article.aut_name}}</div>
           <div slot="label" class="publish-date">{{article.pubdate | relativeTime}}</div>
+          <!-- 模板中的$event是事件参数 -->
+          <!-- 当我们传递给子组件的数据既要使用，还要修改 -->
+          <!-- 传递：props -->
+          <!-- :is-followed ="article.is_followed" -->
+          <!-- 修改：自定义事件 -->
+          <!-- @update-follow="article.is_followed=$event" -->
+          <!-- 简写方式：在组件上使用v-model 
+          value="article.is_followed" 
+          @input = "article.is_followed=$event"
+          -->
+          <!-- 如果需要修改v-model的规则名称，可以通过子组件的model属性来配置修改 -->
+          <!-- 注意：一个组件只能用一次v-model
+          如果有多个属性即想用，又想改，那么可以使用属性.sync修饰符
+
+           -->
+          <follow-user 
+          class="follow-btn"
+          :user_id="article.aut_id"
+          v-model="article.is_followed"
+          />
+          <!-- <van-button
+            v-if="article.is_followed"
+            class="follow-btn"
+            round
+            size="small"
+            @click="onFollow(article.art_id)"
+            :loading="followLoading"
+          >已关注</van-button>
           <van-button
+            v-else
             class="follow-btn"
             type="info"
             color="#3296fa"
             round
             size="small"
             icon="plus"
-          >关注</van-button>
-          <!-- <van-button
-            class="follow-btn"
-            round
-            size="small"
-          >已关注</van-button> -->
+            :loading="followLoading"
+            @click="onFollow(article.art_id)"
+          >关注</van-button> -->
         </van-cell>
         <!-- /用户信息 -->
 
@@ -108,7 +134,7 @@
 import {getArticleById} from '@/api/article'
 // 加载图片预览
 import { ImagePreview } from 'vant';
-
+import FollowUser from '@/components/follow-user'
 // ImagePreview({
 //   images: [
 //     'https://img.yzcdn.cn/vant/apple-1.jpg',
@@ -121,7 +147,9 @@ import { ImagePreview } from 'vant';
 
 export default {
   name: 'ArticleIndex',
-  components: {},
+  components: {
+    FollowUser
+  },
   props: {
     articleId: {
       type: [Number, String,Object],
@@ -134,16 +162,20 @@ export default {
       article:{},
       // 文章的加载状态
       loading:true,
-      errStatus:0 //失败的状态码
+      errStatus:0, //失败的状态码
+      // loading的显示状态
+      isFollowLoading: false,
     }
   },
   computed: {},
   watch: {},
   created () {
     this.loadArticle()
+    // this.onFollow()
   },
   mounted () {},
   methods: {
+    // 获取文章详情
     async loadArticle(){
       this.loading = true
       try{
@@ -174,6 +206,7 @@ export default {
       // 无论成功还是失败都要关闭loading
       this.loading = false
     },
+    // 图片预览
     previewImg(){
       // 获取所有img节点
       const articleContent = this.$refs['article-content']
@@ -191,7 +224,7 @@ export default {
           });
         }
       })
-    }
+    },
   }
 }
 </script>
