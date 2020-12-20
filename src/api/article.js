@@ -17,3 +17,20 @@ export const getArticleById =articleId=> {
   })
 }
 
+
+// 收藏文章
+export const addCollect = ()=> {
+  return request({
+    method:'GET',
+    url:'/app/v1_0/article/collections',
+  })
+}
+
+// 取消收藏文章
+export const deleteCollect =target=> {
+  return request({
+    method:'DELETE',
+    url:`/app/v1_0/article/collections/${target}`,
+  })
+}
+
