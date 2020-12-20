@@ -29,7 +29,7 @@ export default {
   components:{},
   data(){
     return{
-      loading:false
+      loading:false,
     }
   },
   created(){},
@@ -39,7 +39,7 @@ export default {
       try{
         if(this.is_collected){
         // 如果已收藏，则取消收藏
-        await deleteCollect(this.articleId)
+       deleteCollect(this.articleId)
       }else{
         // 否则，添加收藏
         await addCollect(this.articleId)

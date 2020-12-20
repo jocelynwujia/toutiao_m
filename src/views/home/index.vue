@@ -28,7 +28,7 @@
       :key = "channel.id"
       >
         <!-- 文章列表 -->
-        <article-list :channel="channel"/>
+        <article-list :channel ="channel"></article-list>
           <!-- 文章列表 -->
       </van-tab>
       <div slot="nav-right" class="placeholder"></div>
@@ -57,15 +57,18 @@
 
 <script>
 import {getUserChannels} from '@/api/user'
-import ArticleList from './components/article-list'
+// import ArticleList from './components/article-list'
 import channelEdit from './components/channel-edit'
 import { mapState } from 'vuex'
 import {getItem} from '@/utils/storage'
+import ArticleList from './components/article-list.vue'
 export default {
   name: 'HomePage',
   components: {
-    ArticleList,
-    channelEdit
+    // ArticleList,
+    // asaa,
+    channelEdit,
+    ArticleList
   },
   props: {},
   data () {
@@ -83,7 +86,9 @@ export default {
   created () {
     this.loadChannels()
   },
-  mounted () {},
+  mounted () {
+    console.log(this.channels)
+  },
   methods: {
     // 获取用户频道列表
     async loadChannels(){
@@ -96,10 +101,12 @@ export default {
           let channels = []
           if(this.user){
             const {data} = await getUserChannels()
+            // console.log(data)
             channels = data.data.channels
+            // console.log(channels)
           }else{
             // 未登录，判断是否有本地的频道列表数据
-            const localChannels = getItem('TOUTIAO_CHANNELS',)
+            let localChannels = getItem('TOUTIAO_CHANNELS',)
           // 有，拿来使用
           if(localChannels){
             channels = localChannels

@@ -1,10 +1,10 @@
 <template>
-  <van-icon
-    :color="'value === 1' ? 'red' :''"
-    :name="'value ==== 1' ? 'good-job' :'good-job-o'"
+  <van-button
+    :class="value === 1 ? 'active' : ''"
+    :icon="value===1 ? 'good-job' :'good-job-o'"
     :loading = "loading"
     @click="onLike"
-  />
+  ></van-button>
   
 </template>
 
@@ -28,6 +28,9 @@ export default {
       loading:false
     }
   },
+  created(){
+    console.log(this.value)
+  },
   methods:{
     async onLike(){
       this.loading = true
@@ -35,15 +38,15 @@ export default {
         let status = -1 //定义一个表示未点赞变量
         if(this.value === 1){
           // 如果是点赞状态，则取消点赞
-          await deleteLike(this.articleId)
+      deleteLike(this.articleId)
         }else{
           // 如果没有点赞，则添加点赞
           await addLike(this.articleId)
-          this.status = 1
+          status = 1
         }
         // 更新视图
         this.$emit('input',status)
-        this.$toast.success(status === 1 ? '点赞成功':'取消点赞')
+        this.$toast.success(status === 1 ? '点赞成功' : '取消点赞')
       }catch(err){
         console.log(err)
         this.$toast.fail('操作数据失败，请稍后重试')
@@ -55,5 +58,8 @@ export default {
 </script>
 
 <style lang="less" scoped>
-  
+  .active{
+    color: red;
+    // font-size: 80px;
+  }
 </style>

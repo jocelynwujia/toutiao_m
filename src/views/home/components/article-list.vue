@@ -92,6 +92,7 @@ export default {
        this.error = true;
       //  同时将loading关闭
        this.loading = false
+       this.$toast('123')
      }
     },
     // 下拉刷新，会触发onRefresh事件

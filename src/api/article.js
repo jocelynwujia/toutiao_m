@@ -36,12 +36,12 @@ export const deleteCollect =target=> {
 
 
 // 点赞文章
-export const addLike = (articleId)=> {
+export const addLike = (target)=> {
   return request({
     method:'POST',
     url:'/app/v1_0/article/likings',
     data:{
-      targe:articleId
+      target
     }
   })
 }

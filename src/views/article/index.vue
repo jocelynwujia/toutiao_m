@@ -84,34 +84,42 @@
         ref="article-content"
         ></div>
         <van-divider>正文结束</van-divider>
+
+        <!-- 评论列表 -->
+        <comment-list 
+          :source = "article.art_id"
+          @onload-success="totalCommentCount = $event.total_count"
+       />
+        <!-- /评论列表 -->
+
           <!-- 底部区域 -->
-    <div class="article-bottom">
-      <van-button
-        class="comment-btn"
-        type="default"
-        round
-        size="small"
-      >写评论</van-button>
-      <van-icon
-        name="comment-o"
-        info="123"
-        color="#777"
-      />
-      <!-- 收藏文章 -->
-      <collect-article 
-        v-model="article.is_collected"
-        :article-id = "article.art_id"
-      />
-      <!-- /收藏文章 -->
-      <!-- 文章点赞 -->
-      <like-article 
-        v-model="article.attitude"
-        :article-id = "article.art_id"
-      />
-      <!--/ 文章点赞 -->
-      <van-icon name="share" color="#777777"></van-icon>
-    </div>
-    <!-- /底部区域 -->
+      <div class="article-bottom">
+        <van-button
+          class="comment-btn"
+          type="default"
+          round
+          size="small"
+        >写评论</van-button>
+        <van-icon
+          name="comment-o"
+          :info="totalCommentCount"
+          color="#777"
+        />
+        <!-- 收藏文章 -->
+        <collect-article 
+          v-model="article.is_collected"
+          :article-id = "article.art_id"
+        />
+        <!-- /收藏文章 -->
+        <!-- 文章点赞 -->
+        <like-article 
+          v-model="article.attitude"
+          :article-id = "article.art_id"
+        />
+        <!--/ 文章点赞 -->
+        <van-icon name="share" color="#777777"></van-icon>
+      </div>
+      <!-- /底部区域 -->
       </div>
       <!-- /加载完成-文章详情 -->
 
@@ -137,10 +145,12 @@
 <script>
 import {getArticleById} from '@/api/article'
 // 加载图片预览
-import { ImagePreview } from 'vant';
+import { ImagePreview } from 'vant'
 import FollowUser from '@/components/follow-user'
 import collectArticle from '@/components/collect-article'
 import LikeArticle from '@/components/like-article'
+import ArticleList from '../home/components/article-list'
+import CommentList from './components/comment-list'
 // ImagePreview({
 //   images: [
 //     'https://img.yzcdn.cn/vant/apple-1.jpg',
@@ -156,7 +166,9 @@ export default {
   components: {
     FollowUser,
     collectArticle,
-    LikeArticle
+    LikeArticle,
+    ArticleList,
+    CommentList
   },
   props: {
     articleId: {
@@ -173,7 +185,8 @@ export default {
       errStatus:0, //失败的状态码
       // loading的显示状态
       isFollowLoading: false,
-      // articleId:[]
+      totalCommentCount:0 //文章评论总数
+
     }
   },
   computed: {},
