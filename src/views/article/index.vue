@@ -53,7 +53,9 @@
 
         <!-- 文章内容 -->
         <div 
-        class="article-content markdown-body" v-html="article.content"
+        class="article-content markdown-body" 
+        v-html="article.content"
+        ref="article-content"
         ></div>
         <van-divider>正文结束</van-divider>
       </div>
@@ -104,6 +106,19 @@
 
 <script>
 import {getArticleById} from '@/api/article'
+// 加载图片预览
+import { ImagePreview } from 'vant';
+
+// ImagePreview({
+//   images: [
+//     'https://img.yzcdn.cn/vant/apple-1.jpg',
+//     'https://img.yzcdn.cn/vant/apple-2.jpg',
+//   ],
+//   onClose() {
+//     this.$toast('关闭')
+//   },
+// })
+
 export default {
   name: 'ArticleIndex',
   components: {},
@@ -139,7 +154,15 @@ export default {
         //   JSON.parse('adkjakf')
         // }
         // console.log(data)
+        // 数据驱动视图这件事不是立即的
         this.article = data.data
+
+        // 初始化图片点击预览
+        setTimeout(() => {
+          this.previewImg()
+        })
+
+
         // 请求成功，关闭loading
         // this.loading = false
       }catch(err){
@@ -150,6 +173,24 @@ export default {
       }
       // 无论成功还是失败都要关闭loading
       this.loading = false
+    },
+    previewImg(){
+      // 获取所有img节点
+      const articleContent = this.$refs['article-content']
+      const imgs = articleContent.querySelectorAll('img')
+      // 所有图片的存储地址
+      const images = []
+      imgs.forEach((img,index)=>{
+        images.push(img.src)
+        // 给img注册点击事件
+        img.onclick=()=>{
+          // 展示图片预览
+          ImagePreview({
+            images,
+            startPosition: index,
+          });
+        }
+      })
     }
   }
 }
