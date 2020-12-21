@@ -11,7 +11,12 @@
       <div class="user-name">{{this.comment.aut_name}}</div>
       <van-button
         class="like-btn"
-        icon="good-job-o"
+        :class="{
+          liked:comment.is_liking
+        }"
+        :icon="comment.is_liking ? 'good-job' :'good-job-o'"
+        :loading="CommentLoading"
+        @click="onCommentLike"
       >{{this.comment.like_count || '赞'}}</van-button>
     </div>
 
@@ -29,6 +34,7 @@
 </template>
 
 <script>
+import {addCommentLike,deleteCommentLike} from '@/api/comment'
 export default {
   name: 'CommentItem',
   components: {},
@@ -39,13 +45,35 @@ export default {
     }
   },
   data () {
-    return {}
+    return {
+      CommentLoading:false
+    }
   },
   computed: {},
   watch: {},
   created () {},
   mounted () {},
-  methods: {}
+  methods: {
+    async onCommentLike(){
+      this.CommentLoading = true
+      try{
+        if(this.comment.is_liking){
+          // 已点赞，取消点赞
+          await deleteCommentLike(this.comment.com_id)
+          this.comment.like_count--
+        }else{
+          // 没有点赞，添加点赞
+        await addCommentLike(this.comment.com_id)
+        this.comment.like_count++
+        }
+        // 更新视图
+        this.comment.is_liking = !this.comment.is_liking
+      }catch(err){
+        this.$toast('操作失败，请重试')
+      }
+      this.CommentLoading = false
+    }
+  }
 }
 </script>
 
@@ -96,6 +124,9 @@ export default {
     margin-right: 7px;
     .van-icon {
       font-size: 30px;
+    }
+    &.liked{
+      color: #e5645f;
     }
   }
 }
