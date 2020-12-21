@@ -28,11 +28,15 @@ export default {
     source:{
       type:[Number,String,Object],
       required:true
-    }
+    },
+    list:{
+      type:Array,
+      default:()=>[]
+    },
   },
   data(){
     return{
-      list: [],
+      // list: [],
       loading: false,
       finished: false,
       offset:null, //获取下一页数据的标记
@@ -59,7 +63,6 @@ export default {
       // console.log(data)
       const {results} =data.data
       this.list.push(...results)
-
       // 把文章评论的总数量传递到外部
       this.$emit('onload-success',data.data)
       console.log(data.data)

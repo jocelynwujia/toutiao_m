@@ -93,7 +93,7 @@ export default {
       this.isResultShow = true
     },
     onCancel() {
-      console.log('取消')
+      this.$router.back()
     },
   }
 }

@@ -5,6 +5,7 @@
       class="page-nav-bar"
       left-arrow
       title="黑马头条"
+      @click-left="$router.back()"
     ></van-nav-bar>
     <!-- /导航栏 -->
 
@@ -88,6 +89,7 @@
         <!-- 评论列表 -->
         <comment-list 
           :source = "article.art_id"
+          :list = "commentList"
           @onload-success="totalCommentCount = $event.total_count"
        />
         <!-- /评论列表 -->
@@ -99,6 +101,7 @@
           type="default"
           round
           size="small"
+          @click="isPostShow = true"
         >写评论</van-button>
         <van-icon
           name="comment-o"
@@ -120,7 +123,24 @@
         <van-icon name="share" color="#777777"></van-icon>
       </div>
       <!-- /底部区域 -->
+
+      <!-- 发布评论的弹出层 -->
+      <van-popup 
+        v-model="isPostShow" 
+        position="bottom" 
+      >
+      <comment-post
+        :target = "article.art_id"
+        @close="isPostShow=false"
+        @post-success="onPostSuccess"
+       />
+      </van-popup>
+      <!-- /发布评论的弹出层 -->
+        
       </div>
+    
+   
+
       <!-- /加载完成-文章详情 -->
 
       <!-- 加载失败：404 -->
@@ -151,6 +171,8 @@ import collectArticle from '@/components/collect-article'
 import LikeArticle from '@/components/like-article'
 import ArticleList from '../home/components/article-list'
 import CommentList from './components/comment-list'
+import CommentItem from './components/comment-item.vue'
+import CommentPost from './components/comment-post.vue'
 // ImagePreview({
 //   images: [
 //     'https://img.yzcdn.cn/vant/apple-1.jpg',
@@ -168,7 +190,9 @@ export default {
     collectArticle,
     LikeArticle,
     ArticleList,
-    CommentList
+    CommentList,
+    CommentItem,
+    CommentPost
   },
   props: {
     articleId: {
@@ -185,8 +209,9 @@ export default {
       errStatus:0, //失败的状态码
       // loading的显示状态
       isFollowLoading: false,
-      totalCommentCount:0 //文章评论总数
-
+      totalCommentCount:0, //文章评论总数
+      isPostShow:false,  //控制评论框的显示与隐藏
+      commentList:[] //评论列表
     }
   },
   computed: {},
@@ -210,7 +235,7 @@ export default {
         // console.log(data)
         // 数据驱动视图这件事不是立即的
         this.article = data.data
-
+        // console.log(this.article)
         // 初始化图片点击预览
         setTimeout(() => {
           this.previewImg()
@@ -247,6 +272,12 @@ export default {
         }
       })
     },
+    onPostSuccess(data){
+    // 关闭弹出层
+      this.isPostShow = false
+    // 将发布内容显示到列表顶部
+      this.commentList.unshift(data.new_obj)
+    }
   }
 }
 </script>
