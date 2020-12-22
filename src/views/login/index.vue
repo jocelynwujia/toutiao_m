@@ -98,8 +98,9 @@
                 const { data } = await login(user)
                 this.$store.commit('setUser',data.data)
                 this.$toast.success('登录成功')
-                this.$router.push('/my')
-                
+                // this.$router.push('/my')
+                this.$router.push(this.$route.query.redirect || '/')
+                // 
             }catch(err){
                 // console.log(err);
                 if(err.response.status === 400){

@@ -53,11 +53,11 @@
     <van-grid :column-num="2" class="grid-nav" clickable />
     <van-grid :column-num="2" class="grid-nav mb-9" clickable>
       <van-grid-item class="grid-item">
-        <i slot="icon" class="iconfont iconshoucang"></i>
+        <i slot="icon" class="iconfont toutiao_shoucang"></i>
         <span slot="text" class="text">收藏</span>
       </van-grid-item>
       <van-grid-item class="grid-item">
-        <i slot="icon" class="iconfont iconlishi"></i>
+        <i slot="icon" class="iconfont toutiao_lishi"></i>
         <span slot="text" class="text">历史</span>
       </van-grid-item>
     </van-grid>
@@ -204,10 +204,10 @@ export default {
       i.iconfont {
         font-size: 45px;
       }
-      .iconshoucang {
+      .toutiao_shoucang {
         color: #eb5253;
       }
-      .iconlishi {
+      .toutiao_lishi {
         color: #ff9d1d;
       }
       span.text {

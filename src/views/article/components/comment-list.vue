@@ -6,11 +6,13 @@
     :error="error"
     error-text="加载失败，请点击重试"
     @load="onLoad"
+    :immediate-check=false
   >
     <comment-item
     v-for="(item,index) in list" 
     :key="index" 
     :comment="item"
+    @replay-click ="$emit('replay-click',$event)"
     />
   </van-list>
 </template>
@@ -33,6 +35,15 @@ export default {
       type:Array,
       default:()=>[]
     },
+    type:{
+      type:String,
+      // 自定义Prop数据验证
+      validator(value){
+        return ['a','c'].includes(value)
+      },
+      default:'a',
+      
+    }
   },
   data(){
     return{
@@ -45,6 +56,8 @@ export default {
     }
   },
   created(){
+    // 当你手动初始onload，它就不会自动开始初始的loading，所以我们必须手动开启loading
+    this.loading = true
     //可以一上来就拿到评论总数
     this.onLoad()
   },
@@ -52,10 +65,11 @@ export default {
     async onLoad() {
       
       try{
+        //获取文章评论和获取评论的回复是同一个接口，区别就是在于传递的参数不一样 type source
         // 1.请求获取数据
         const {data } = await getComments({
-          type:'a',//评论类型，a-对文章(article)的评论，c-对评论(comment)的回复
-          source:this.source, //源id，文章id或评论id源id，文章id或评论id
+          type:this.type,//评论类型，a-对文章(article)的评论，c-对评论(comment)的回复
+          source:this.source.toString(), //源id，文章id或评论id源id，文章id或评论id
           offset:this.offset,//获取评论数据的偏移量，值为评论id，表示从此id的数据向后取，不传表示从第一页开始读取数据
           limit:this.limit//获取的评论数据个数，不传表示采用后端服务设定的默认每页数据量
         })

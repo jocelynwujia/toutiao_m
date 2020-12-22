@@ -91,6 +91,7 @@
           :source = "article.art_id"
           :list = "commentList"
           @onload-success="totalCommentCount = $event.total_count"
+          @replay-click ="onRelyClick"
        />
         <!-- /评论列表 -->
 
@@ -138,8 +139,6 @@
       <!-- /发布评论的弹出层 -->
         
       </div>
-    
-   
 
       <!-- /加载完成-文章详情 -->
 
@@ -158,7 +157,22 @@
       </div>
       <!-- /加载失败：其它未知错误（例如网络原因或服务端异常） -->
     </div>
-
+    <!-- 评论回复弹出层 -->
+    <!-- 弹出层是懒渲染的，只有在第一次展示的时候才会渲染里面的内容，之后它的关闭和显示都是在切换内容的显示和隐藏 -->
+    
+    <van-popup 
+     v-model="isReplyShow" 
+     position="bottom" 
+     style="height: 100%"
+    >
+      <!-- v-if 渲染元素 true  -->
+      <comment-reply 
+      v-if="isReplyShow"
+      :comment="currentComment" 
+      @close = "isReplyShow=false"
+      />
+    </van-popup>
+    <!-- /评论回复弹出层 -->
   </div>
 </template>
 
@@ -173,6 +187,7 @@ import ArticleList from '../home/components/article-list'
 import CommentList from './components/comment-list'
 import CommentItem from './components/comment-item.vue'
 import CommentPost from './components/comment-post.vue'
+import CommentReply from './components/comment-reply.vue'
 // ImagePreview({
 //   images: [
 //     'https://img.yzcdn.cn/vant/apple-1.jpg',
@@ -192,8 +207,17 @@ export default {
     ArticleList,
     CommentList,
     CommentItem,
-    CommentPost
+    CommentPost,
+    CommentReply
   },
+  // 依赖注入
+  // 给所有的后代组件提供数据
+  // 不要滥用
+  provide: function () {
+  return {
+    articleId:this.articleId
+  }
+},
   props: {
     articleId: {
       type: [Number, String,Object],
@@ -211,7 +235,9 @@ export default {
       isFollowLoading: false,
       totalCommentCount:0, //文章评论总数
       isPostShow:false,  //控制评论框的显示与隐藏
-      commentList:[] //评论列表
+      commentList:[], //评论列表
+      isReplyShow:false, //控制评论回复的显示与隐藏
+      currentComment:{} //当前点击的回复项
     }
   },
   computed: {},
@@ -277,6 +303,13 @@ export default {
       this.isPostShow = false
     // 将发布内容显示到列表顶部
       this.commentList.unshift(data.new_obj)
+    },
+    onRelyClick(comment){
+      // console.log(comment)
+      // 当前回复对象就是点击回复对象时传过来的值
+      this.currentComment = comment
+      // 开启弹出层
+      this.isReplyShow = true
     }
   }
 }
